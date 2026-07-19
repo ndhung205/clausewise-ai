@@ -9,6 +9,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -e . --break-system-packages || true
+      - run: pip install pytest --break-system-packages
       - name: Run tests (pass if no tests collected yet)
         run: |
           pytest; code=$?
