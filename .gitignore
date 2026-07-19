@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+mlruns/
+data/processed/embeddings/*
+!data/processed/embeddings/.gitkeep
+*.db
+.DS_Store
+.pytest_cache/
+.ruff_cache/

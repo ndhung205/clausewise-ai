@@ -1,0 +1,14 @@
+[project]
+name = "clausewise-ai"
+version = "0.1.0"
+description = "AI assistant giải thích & phân tích rủi ro hợp đồng bảo hiểm - clause-aware RAG + Policy Risk Scanner"
+requires-python = ">=3.11"
+dependencies = [
+    # TODO: điền dần theo từng tuần, xem mục 18 CLAUSEWISE_PROJECT_SPEC.md
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.black]
+line-length = 100
