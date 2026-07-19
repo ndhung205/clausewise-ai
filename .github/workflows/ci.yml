@@ -9,4 +9,11 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -e . --break-system-packages || true
-      - run: pytest
+      - name: Run tests (pass if no tests collected yet)
+        run: |
+          pytest; code=$?
+          if [ $code -eq 5 ]; then
+            echo "Chưa có test nào — bỏ qua, không tính là lỗi ở giai đoạn này."
+            exit 0
+          fi
+          exit $code
