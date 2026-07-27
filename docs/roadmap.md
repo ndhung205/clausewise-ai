@@ -45,6 +45,7 @@ Nguyên tắc xuyên suốt:
 - [ ] So sánh Recall@5 trước/sau — có số liệu rõ ràng
 - [ ] Guardrail: từ chối trả lời khi confidence thấp
 - [ ] Query Intent Classification: test ≥15 câu mỗi nhóm (đủ ngữ cảnh / thiếu ngữ cảnh / ngoài phạm vi / xin khuyến nghị / gian lận-injection), đạt ≥85% phân loại đúng, ≥95% precision cho nhóm gian lận/injection
+- [ ] (Stretch, không bắt buộc) Benchmark Parent-Child Retrieval và/hoặc Contextual Retrieval nếu còn thời gian — ghi kết quả vào Decision Log dù dùng hay không dùng
 **Time Budget:** ~18h
 **Risk:** —
 

@@ -211,7 +211,7 @@ clausewise-ai/
 ├── docs/                            # tài liệu SỐNG, cập nhật hằng tuần
 │   ├── architecture.md dataset.md roadmap.md benchmark.md
 │   ├── decision_log.md error_analysis.md risk_log.md
-│   └── journal.md meeting_notes.md
+│   └── journal.md meeting_notes.md codex_prompts.md
 ├── tests/{retrieval,evaluation,api,risk_scanner}/
 ├── ui/
 └── .github/workflows/ci.yml
@@ -246,8 +246,10 @@ clausewise-ai/
 
 ## 11. Evaluation Specification
 
-**Retrieval:** Recall@3/5/10 · MRR · Latency
-**Generation:** Human rubric · Hallucination Rate · Groundedness (tỷ lệ câu trả lời có mọi ý đều truy được về tài liệu nguồn) · Citation Precision (tỷ lệ trích dẫn trỏ đúng điều khoản, không chỉ đúng tài liệu)
+**Retrieval:** Recall@3/5/10 · MRR · Latency · Context Precision (tỷ lệ tài liệu truy xuất thực sự hữu ích, đo phần "nhiễu" — bổ trợ cho Recall@k vốn chỉ đo phần "thiếu")
+**Generation:** Human rubric (chấm bằng LLM-as-judge trên toàn bộ tập test, chỉ tự tay kiểm tra ~10% mẫu để xác nhận độ tin cậy) · Hallucination Rate · Groundedness · Citation Precision · Answer Relevancy (câu trả lời có đúng trọng tâm câu hỏi không — khác Groundedness: đúng theo tài liệu nhưng lạc đề vẫn tính là lỗi)
+
+**Nguyên tắc debug:** luôn tách riêng lỗi Retrieval và lỗi Generation trước khi sửa — nếu chỉ nhìn câu trả lời cuối cùng, không thể biết lỗi do tìm sai tài liệu hay do LLM tự bịa dù đã có đúng ngữ cảnh (đây là lý do tồn tại 3 loại lỗi ở bảng dưới).
 **Phân loại lỗi (Week 11):** Retrieval Failure (không tìm đúng đoạn) · Citation Error (trích dẫn sai/không tồn tại) · Unsupported Claim (thông tin không có căn cứ)
 
 Quy trình: ≥200 câu test → phân loại lỗi → vẽ biểu đồ → ưu tiên cải thiện nhóm lỗi cao nhất.
