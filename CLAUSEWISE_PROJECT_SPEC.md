@@ -275,6 +275,28 @@ Reason: (điền sau benchmark)
 Consequences: (đánh đổi chấp nhận được)
 ```
 
+```markdown
+### ADR-002: Universal Regex vs Per-Source Adapter Pattern (DRAFT — chốt chính thức ở Week 2)
+Context: Task 4/5 (Week 1) đọc tay 16 tài liệu (15 hợp đồng, 5 công ty + Luật KD Bảo hiểm 2022),
+phát hiện mỗi công ty dùng 1 kiểu cấu trúc phân cấp khác nhau:
+- AIA: có file dùng Roman (I/II/III/IV) không có "Điều", có file CHƯƠNG không số + Điều liên tục,
+  có file Điều reset theo từng CHƯƠNG.
+- Bảo Việt/Prudential: CHƯƠNG → Điều → mục con, nhưng mục lục nhiều lỗi số trang, nhiều cross-reference
+  dễ bị regex heading nhận nhầm.
+- Dai-ichi: hầu như không có CHƯƠNG, ĐIỀU là cấp cao nhất.
+- Luật: 5 tầng (Chương → Mục → Điều → Khoản → Điểm), sâu hơn mọi hợp đồng công ty.
+Alternatives:
+  A. Universal regex — 1 bộ pattern chung, thử khớp nhiều dạng heading theo thứ tự ưu tiên.
+  B. Per-source adapter — mỗi công ty 1 class parser riêng (AIAParser, BaoVietParser,
+     DaiichiParser, ManulifeParser, PrudentialParser, LawParser), cùng kế thừa chung
+     1 interface `ClauseParser`.
+Decision: (để trống — quyết định chính thức khi code thật ở Week 2, dựa trên benchmark
+độ chính xác chunking giữa 2 phương án)
+Reason: (điền sau khi có số liệu — ví dụ so sánh % chunk đúng ranh giới giữa 2 cách làm)
+Consequences: (điền sau — ví dụ Per-source adapter dễ đúng hơn nhưng tốn công viết/bảo trì hơn
+khi thêm công ty mới; Universal regex ít code hơn nhưng rủi ro sai cao hơn với cấu trúc lạ)
+```
+
 ---
 
 ## 13. Project Journal Template
