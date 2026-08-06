@@ -349,6 +349,7 @@ Ghi vào `docs/journal.md`, 5 phút cuối mỗi buổi.
 - [ ] Documentation cập nhật
 - [ ] Journal đã ghi
 - [ ] Decision Log/ADR cập nhật (nếu có quyết định)
+- [ ] Sao lưu toàn bộ tài liệu nghiên cứu, lý thuyết, và kế hoạch thiết kế quan trọng đã hoàn thiện trong tuần vào thư mục `D:\HocTap\Project_NLP_RAG\question_each_week\week[x]` (với `x` là số tuần tương ứng) để lưu trữ và quản lý tập trung.
 
 ---
 
