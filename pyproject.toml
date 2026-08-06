@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "AI assistant giải thích & phân tích rủi ro hợp đồng bảo hiểm - clause-aware RAG + Policy Risk Scanner"
 requires-python = ">=3.11"
 dependencies = [
-    # TODO: điền dần theo từng tuần, xem mục 18 CLAUSEWISE_PROJECT_SPEC.md
+    "pydantic>=2.0",
+    "loguru>=0.7.0"
 ]
 
 [tool.ruff]
