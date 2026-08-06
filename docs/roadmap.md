@@ -11,8 +11,8 @@ Nguyên tắc xuyên suốt:
 **Milestone:** Hiểu nền tảng RAG/Retrieval trước khi code
 **Deliverable:** Note giải thích RAG bằng sơ đồ tự vẽ (embedding, dense/sparse/hybrid retrieval, ANN)
 **DoD:**
-- [ ] Giải thích được RAG khác gì hỏi thẳng LLM, không cần nhìn tài liệu
-- [ ] Giải thích được BM25 vs Embedding vs Hybrid
+- [x] Giải thích được RAG khác gì hỏi thẳng LLM, không cần nhìn tài liệu
+- [x] Giải thích được BM25 vs Embedding vs Hybrid
 **Time Budget:** ~10h (đọc + note)
 **Risk:** —
 
@@ -20,9 +20,9 @@ Nguyên tắc xuyên suốt:
 **Milestone:** Dataset v1 sẵn sàng, đã chunk theo điều khoản
 **Deliverable:** `data/raw/` đầy đủ + Data Profiling Report (`docs/dataset.md`)
 **DoD:**
-- [ ] Có ≥15 hợp đồng/tài liệu bảo hiểm + luật liên quan
-- [ ] Clause-aware chunking chạy được, in ra mẫu kiểm tra bằng mắt
-- [ ] Profiling: số PDF, số trang, số điều khoản, số sản phẩm/công ty
+- [x] Có ≥15 hợp đồng/tài liệu bảo hiểm + luật liên quan
+- [x] Clause-aware chunking chạy được, in ra mẫu kiểm tra bằng mắt
+- [x] Profiling: số PDF, số trang, số điều khoản, số sản phẩm/công ty
 **Time Budget:** ~16h
 **Risk:** PDF quét kém chất lượng → OCR lỗi → phương án: ưu tiên nguồn có bản text-first
 
