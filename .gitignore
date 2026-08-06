@@ -1,12 +1,44 @@
+# Python
 __pycache__/
 *.pyc
-.venv/
-venv/
-.env
-mlruns/
-data/processed/embeddings/*
-!data/processed/embeddings/.gitkeep
-*.db
-.DS_Store
+*.pyo
+*.pyd
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Configuration & Secrets
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project Data (Ignore all processed outputs, embeddings, and vector DBs)
+# Note: Keep data/raw for local PDFs, but ignore all generated/processed files
+data/processed/**/*
+!data/processed/**/.gitkeep
+
+# MLflow & Tracking
+mlruns/
+*.db
+*.sqlite3
+

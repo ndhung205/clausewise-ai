@@ -109,36 +109,84 @@ Ghi chú: số điều khoản ở trên là số lần match heading/cross-refe
 - Nếu chỉ chunk tới cấp `Điều`, các điều dài như phần giải thích từ ngữ hoặc điều cấm/gian lận sẽ quá lớn và lẫn nhiều ý nhỏ.
 - Cần giữ đường dẫn phân cấp đầy đủ trong metadata, ví dụ `Chương I / Điều 4 / Khoản 1`, để citation sau này đủ rõ.
 
+### Bảng tổng hợp đặc điểm cấu trúc
+
+Bảng này giúp nhìn tổng quan sự đa dạng của dataset — lưu ý rằng đặc điểm gắn với **tài liệu**, không phải công ty (AIA tự có 3 file với 3 kiểu cấu trúc khác nhau).
+
+| Đặc điểm | AIA | Bảo Việt | Dai-ichi | Manulife | Prudential | Luật |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| Roman section (I/II/III) | ✓ | | | | | |
+| Chương / CHƯƠNG | ✓ | ✓ | | ✓ | ✓ | ✓ |
+| Điều / ĐIỀU | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Mục con decimal (1.1, 1.2) | | ✓ | ✓ | ✓ | | ✓ |
+| Layout 2 cột | | | | ✓ | | |
+| PDF image-only (cần OCR) | | | | ✓ | | |
+| Bảng quyền lợi lớn | ✓ | | | ✓ | | |
+| Phân cấp sâu (≥5 tầng) | | | | | | ✓ |
+| Lỗi spacing/ký tự | ✓ | | | | ✓ | |
+| Điều reset theo Chương | ✓ | | | | | |
+
 ## 6. Khó khăn gặp phải
 
-- Không đồng nhất cấu trúc giữa các công ty: Roman section, `CHƯƠNG` có số, `CHƯƠNG` không số, `Điều` liên tục, `Điều` reset theo chương, `ĐIỀU -> 1.1`.
-- Layout 2 cột ở Manulife làm sai thứ tự text nếu dùng extraction mặc định.
+- Không đồng nhất cấu trúc giữa các **tài liệu** — kể cả trong cùng 1 công ty (AIA tự có 3 file với 3 kiểu cấu trúc khác nhau). Điều này chứng minh **company ≠ document structure**, là lập luận chính cho Document Structure Profiler thay vì per-company parser (xem ADR-002).
+- Layout 2 cột (hiện gặp ở Manulife, có thể gặp ở bất kỳ tài liệu bảo hiểm nào) làm sai thứ tự text nếu dùng extraction mặc định.
 - Có PDF image-only/scan: `manulife_ca-nhan-linh-hoat-khong-chia-lai_dieukhoan.pdf`.
-- Bảng quyền lợi lớn xuất hiện trong AIA/Manulife; cần table-aware hoặc ít nhất giữ block bảng cùng metadata.
+- Bảng quyền lợi lớn xuất hiện trong một số tài liệu (hiện gặp ở AIA/Manulife); cần table-aware hoặc ít nhất giữ block bảng cùng metadata.
 - Mục lục, trang tóm tắt, watermark, footer/header và mã tài liệu có thể gây nhiễu regex.
-- Text extraction có lỗi spacing/ký tự rơi, nhất là Prudential và AIA.
+- Text extraction có lỗi spacing/ký tự rơi (hiện gặp ở Prudential và AIA).
 - Các danh sách con `a)`, `i.`, `i)` chứa chi tiết quan trọng; không nên bỏ qua khi chunk.
 
-## 7. Kế hoạch ingestion chuẩn bị cho Week 2
+## 7. Phát hiện phục vụ thiết kế ingestion Week 2
 
-- Bước 1: kiểm tra file PDF hợp lệ và text layer. Nếu text rỗng hoặc quá ít ký tự/trang, báo lỗi PDF scan/image-only theo FR-001.
-- Bước 2: phân loại layout theo document profile: single-column, two-column, table-heavy, law-style, Roman-section.
-- Bước 3: làm sạch text: bỏ header/footer/watermark/mã tài liệu lặp, normalize spacing bất thường, nối heading bị wrap.
-- Bước 4: extraction theo layout. Với Manulife 2 cột, cần tách cột trước khi nối dòng.
-- Bước 5: clause-aware chunking theo profile:
-  - AIA Roman-only: chunk theo `I/II/III/IV`.
-  - AIA có chương: chunk theo `CHƯƠNG -> Điều`, nhưng cho phép `Điều` reset.
-  - Bảo Việt/Prudential: chunk theo `CHƯƠNG -> Điều -> mục con`.
-  - Dai-ichi: chunk theo `ĐIỀU -> mục con decimal`.
-  - Luật: chunk theo `Chương -> Mục -> Điều -> Khoản -> Điểm`.
-- Bước 6: mỗi chunk cần metadata tối thiểu: `source_file`, `company`, `product`, `document_type`, `page_start`, `page_end`, `hierarchy_path`, `section`, `text_layer_ok`, `layout_type`.
-- Bước 7: in mẫu ít nhất 20 chunk để kiểm tra bằng mắt theo DoD Week 1.
+Các quan sát dưới đây mô tả **đặc điểm tài liệu**, không phải thiết kế parser. Ingestion system hoạt động theo document profile (xem ADR-002), không hardcode theo công ty.
+
+### 7.1 Yêu cầu extraction (Lớp 1 — trước khi có text)
+
+- Kiểm tra file PDF hợp lệ và text layer. Nếu text rỗng hoặc quá ít ký tự/trang → báo lỗi PDF scan/image-only theo FR-001.
+- Phân loại layout: single-column, two-column, table-heavy. Với tài liệu 2 cột, cần column-aware extraction (MinerU) trước khi nối dòng.
+- Làm sạch text: loại header/footer/watermark/mã tài liệu lặp, normalize spacing bất thường, nối heading bị wrap.
+
+### 7.2 Yêu cầu structure profiling (Lớp 2 — từ text đã sạch)
+
+Document Structure Profiler cần nhận diện các profile sau (phân loại theo **đặc điểm tài liệu**, không theo công ty):
+
+| Profile | Đặc điểm cấu trúc | Ví dụ tài liệu đã gặp |
+|---|---|---|
+| Roman top-level | Mục lớn dạng `I/II/III/IV`, không có `Điều` | `aia_anbinhuuviet` |
+| Chapter → Article (reset) | `CHƯƠNG` + `Điều` reset từ 1 trong mỗi chương | `aia_suckhoetrondoi` |
+| Chapter → Article (continuous) | `CHƯƠNG` → `Điều` đánh số liên tục | `baoviet_*`, `prudential_*`, `manulife_maxsongkhoe` |
+| Article top-level | Không có `CHƯƠNG`, `ĐIỀU` là cấp cao nhất → decimal sub | `daiichilife_*` |
+| Deep hierarchy (law) | `Chương → Mục → Điều → Khoản → Điểm` (5 tầng) | `luat_kinhdoanh_baohiem_2022` |
+
+Profiler cần output `hierarchy_confidence` — nếu confidence thấp (không nhận diện đủ tin cậy pattern nào) → reject rõ ràng, không âm thầm chunk sai (FR-004).
+
+### 7.3 Metadata tối thiểu mỗi chunk
+
+| Field | Mô tả | Ví dụ |
+|---|---|---|
+| `source_file` | Tên file gốc | `aia_suckhoetrondoi_dieukhoan.pdf` |
+| `company` | Công ty (extract từ filename) | `aia` |
+| `product` | Sản phẩm | `suckhoetrondoi` |
+| `document_type` | Loại tài liệu | `contract` / `law` |
+| `page_start` | Trang bắt đầu | `2` |
+| `page_end` | Trang kết thúc | `3` |
+| `hierarchy_path` | Đường dẫn phân cấp đầy đủ | `CHƯƠNG I / Điều 3 / 3.1` |
+| `section` | Heading gần nhất | `Điều 3. Quyền lợi bảo hiểm` |
+| `extractor` | Tool extraction Lớp 1 | `mineru` |
+| `profile_type` | Profile structure đã nhận diện | `chapter_article_reset` |
+| `hierarchy_confidence` | Độ tin cậy profiling | `0.94` |
+| `ocr_used` | Có dùng OCR không | `true` / `false` |
+| `parser_version` | Phiên bản parser | `0.1.0` |
+
+### 7.4 Kiểm tra đầu ra
+
+In mẫu ít nhất 20 chunk để kiểm tra bằng mắt theo DoD Week 2 (chunk không cắt giữa 1 điều khoản).
 
 ## 8. Data Governance
 
 Ngày kiểm kê: 2026-07-28.
 
-| File | Nguồn | Ngày kiểm kê | License/Điều kiện sử dụng | SHA256 |
+| File | Nguồn | Ngày tải / Xác nhận cuối | License/Điều kiện sử dụng | SHA256 |
 |---|---|---|---|---|
 | `data/raw/contracts/aia_anbinhuuviet_dieukhoan.pdf` | Website công khai AIA Việt Nam | 2026-07-28 | Chỉ dùng học tập/phi thương mại; cần bổ sung URL gốc | `c81af866c216896bd4150e213dbcbd3c400f1f77449557fe5e5f718b8d720a41` |
 | `data/raw/contracts/aia_khoetronven_dieukhoan.pdf` | Website công khai AIA Việt Nam | 2026-07-28 | Chỉ dùng học tập/phi thương mại; cần bổ sung URL gốc | `d635de929b95459c35465602fc42a5192bbea9962cd7c0acc6281050aca7abc3` |

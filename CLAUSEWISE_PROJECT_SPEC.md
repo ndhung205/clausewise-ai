@@ -354,7 +354,7 @@ Ghi vào `docs/journal.md`, 5 phút cuối mỗi buổi.
 
 ## 18. Công cụ (Tech Stack)
 
-Python 3.11 · Git · VS Code · Docker Desktop · `uv`/`venv` · ChromaDB · sentence-transformers · rank-bm25 · BAAI/bge-reranker · FastAPI · Uvicorn · Transformers · PEFT (LoRA) · bitsandbytes (QLoRA) · RunPod/Vast.ai · MLflow · GitHub Actions · Streamlit · python-dotenv · pydantic · loguru · pytest
+Python 3.11 · Git · VS Code · Docker Desktop · `uv`/`venv` · ChromaDB · sentence-transformers · rank-bm25 · BAAI/bge-reranker · FastAPI · Uvicorn · Transformers · PEFT (LoRA) · bitsandbytes (QLoRA) · RunPod/Vast.ai · MLflow · GitHub Actions · Streamlit · python-dotenv · pydantic · loguru · pytest · MinerU *(thêm ở Week 2 — PDF extraction Lớp 1: layout analysis, reading order, OCR tiếng Việt; xem Decision Log)*
 
 ---
 
